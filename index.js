@@ -11,6 +11,10 @@ db.once('open', () => console.log('Connected to Database'))
  
 app.use(express.json())
 
+app.get('/', (req, res) => {
+    res.send('Fatima Api')
+})
+
 const subscribersRouter = require('./routes/subscribers')
 app.use('/subscribers', subscribersRouter)
 
