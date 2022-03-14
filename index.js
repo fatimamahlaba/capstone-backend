@@ -5,6 +5,7 @@ const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
 
+const subscribersRouter = require('./routes/subscribers')
 app.use(express.json())
 app.use(cors())
 
@@ -17,9 +18,9 @@ app.get('/', (req, res) => {
     res.send('test')
 })
 
-const subscribersRouter = require('./routes/subscribers')
 app.use('/subscribers', subscribersRouter)
 
-const port = app.set('port', process.env.PORT || 4170)
-
-app.listen(port, console.log(`Server Started on ${app.get('port')}`)) 
+app.set("port", process.env.PORT || 6363);
+app.listen(app.get("port"), (server) => {
+  console.info(`Server listen on port ${app.get("port")}`);
+});
