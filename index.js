@@ -14,8 +14,7 @@ db.on('error', (error) => console.log(error))
 db.once('open', () => console.log('Connected to Database'))
 
 app.get('/', (req, res) => {
-    
-    res.send('Fatima Api')
+    res.send('test')
 })
 
 const subscribersRouter = require('./routes/subscribers')
