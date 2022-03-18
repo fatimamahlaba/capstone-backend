@@ -1,26 +1,154 @@
-require('dotenv').config()
+require("dotenv").config();
 
-const express = require('express')
-const app = express()
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
 
-const subscribersRouter = require('./routes/subscribers')
-app.use(express.json())
-app.use(cors())
+const Posts = require("./routes/posts");
+const subscribers = require("./routes/subscribers");
 
-mongoose.connect(process.env.DATABASE_URL)
-const db = mongoose.connection
-db.on('error', (error) => console.log(error))
-db.once('open', () => console.log('Connected to Database'))
+// Setting up MongoDB connection
+mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
+const db = mongoose.connection;
+db.on("error", (error) => console.log(error));
+db.once("open", () => console.log("Connected to database"));
 
-app.get('/', (req, res) => {
-    res.send('test')
-})
+// Configure the Express app
+const app = express();
+app.set("port", process.env.PORT || 2425);
+app.use(express.json());
+app.use(cors());
 
-app.use('/subscribers', subscribersRouter)
+// API routes
+app.get("/", (req, res, next) => {
+  res.send({
+    message: "Welcome to the Capstone Blog API",
+    subscribers_routes: {
+      subscriber_register: {
+        method: "POST",
+        route: "/subscribers",
+        request_body: {
+          name: "String",
+          email: "String",
+          contact: "String",
+          password: "String",
+        },
+        result: {
+          jwt: "String token",
+        },
+      },
+      subscriber_login: {
+        method: "PATCH",
+        route: "/users",
+        request_body: {
+          email: "String",
+          password: "String",
+        },
+        result: {
+          jwt: "String token",
+        },
+      },
+      all_subscribers: {
+        method: "GET",
+        route: "/subscribers",
+        result: {
+          subscribers: "Array",
+        },
+      },
+      single_subscriber: {
+        method: "GET",
+        route: "/subscribers/:id",
+        result: {
+          subscriber: "Object",
+        },
+      },
+      update_subscriber: {
+        method: "PUT",
+        request_body: {
+          name: "String",
+          email: "String",
+          contact: "String",
+          password: "String",
+          avatar: "String",
+          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+        },
+        route: "/subscribers/:id",
+        result: {
+          subscriber: "Object",
+        },
+      },
+      delete_subscriber: {
+        method: "DELETE",
+        route: "/subscribers/:id",
+        result: {
+          message: "Object",
+        },
+      },
+    },
+    post_routes: {
+      all_posts: {
+        method: "GET",
+        route: "/posts",
+        headers: {
+          authorization: "Bearer (JWT token)",
+        },
+        result: {
+          posts: "Array",
+        },
+      },
+      single_post: {
+        method: "GET",
+        route: "/posts/:id",
+        headers: {
+          authorization: "Bearer (JWT token)",
+        },
+        result: {
+          post: "Object",
+        },
+      },
+      create_post: {
+        method: "POST",
+        route: "/posts/",
+        headers: {
+          authorization: "Bearer (JWT token)",
+        },
+        request_body: {
+          title: "String",
+          body: "String",
+          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+        },
+        result: {
+          post: "Object",
+        },
+      },
+      update_post: {
+        method: "PUT",
+        route: "/posts/:id",
+        headers: {
+          authorization: "Bearer (JWT token)",
+        },
+        request_body: {
+          title: "String *optional*",
+          body: "String *optional*",
+          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+        },
+        result: {
+          post: "Object",
+        },
+      },
+      delete_post: {
+        method: "DELETE",
+        route: "/posts/:id",
+        result: {
+          message: "Object",
+        },
+      },
+    },
+  });
+});
+app.use("/subscribers", subscribers);
+app.use("/posts", Posts);
 
-app.set("port", process.env.PORT || 6363);
 app.listen(app.get("port"), (server) => {
   console.info(`Server listen on port ${app.get("port")}`);
 });

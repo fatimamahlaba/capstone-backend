@@ -1,18 +1,18 @@
 const mongoose = require('mongoose')
-const Subscriber = require('../models/subscriber') 
 
-const subscriberSchema = new mongoose.Schema({
+
+const PostSchema = new mongoose.Schema({
  name: {
 type: String,
 required: true
  }, 
 
- subscribedToBlog: {
+ postedToBlog: {
 type: String,
 required: true
  },
 
- subscriberDate: {
+ postedDate: {
 type: Date,
 required: true,
 default: Date.now
@@ -24,4 +24,4 @@ default: Date.now
  }
 })
 
-module.exports = mongoose.model('Subscriber', subscriberSchema)
+module.exports = mongoose.model('Post', PostSchema)

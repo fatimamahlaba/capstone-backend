@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Subscriber = require('../models/subscriber') 
+const Drivers = require('../models/drivers') 
 
 const subscriberSchema = new mongoose.Schema({
  name: {
@@ -7,21 +7,16 @@ type: String,
 required: true
  }, 
 
- subscribedToBlog: {
+ number: {
 type: String,
 required: true
  },
 
- subscriberDate: {
+ bookingDate: {
 type: Date,
 required: true,
 default: Date.now
  },
-
- subscriberImg: {
-     type: String,
-     required: true
- }
 })
 
-module.exports = mongoose.model('Subscriber', subscriberSchema)
+module.exports = mongoose.model('Drivers', subscriberSchema)
