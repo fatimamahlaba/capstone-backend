@@ -21,6 +21,7 @@ router.post('/', async (req, res) => {
 const driver = new Drivers({
     name: req.body.name,
     number: req.body.number,
+    content: req.body.content,
     avatar: req.body.avatar
 })
 try{
