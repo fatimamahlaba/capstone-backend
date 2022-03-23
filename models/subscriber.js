@@ -26,11 +26,6 @@ required: true
  required: true
  }, 
 
- subscribedToBlog: {
-type: String,
-required: true
- },
-
  subscriberDate: {
 type: Date,
 required: true,

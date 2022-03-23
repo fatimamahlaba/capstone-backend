@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const Drivers = require('../models/drivers') 
+const Drivers = require('../models/Drivers') 
 
 const subscriberSchema = new mongoose.Schema({
  name: {
@@ -11,6 +11,10 @@ required: true
 type: String,
 required: true
  },
+ avatar: {
+    type: String,
+    required: true
+},
 
  bookingDate: {
 type: Date,

@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const Posts = require("./routes/posts");
 const subscribers = require("./routes/subscribers");
+const drivers = require("./routes/drivers");
 
 // Setting up MongoDB connection
 mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true });
@@ -70,7 +71,7 @@ app.get("/", (req, res, next) => {
           contact: "String",
           password: "String",
           avatar: "String",
-          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+          img: "String",
         },
         route: "/subscribers/:id",
         result: {
@@ -115,7 +116,7 @@ app.get("/", (req, res, next) => {
         request_body: {
           title: "String",
           body: "String",
-          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+          img: "String",
         },
         result: {
           post: "Object",
@@ -148,6 +149,7 @@ app.get("/", (req, res, next) => {
 });
 app.use("/subscribers", subscribers);
 app.use("/posts", Posts);
+app.use("/drivers", drivers)
 
 app.listen(app.get("port"), (server) => {subscribers
   console.info(`Server listen on port ${app.get("port")}`);

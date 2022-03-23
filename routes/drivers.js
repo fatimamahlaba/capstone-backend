@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const Driver = require('../models/drivers')
+const Drivers = require("../models/Drivers")
 
 // GETTING ALL SUBCRIBER
 router.get('/', async (req, res) => {
 try {
-const drivers = await Driver.find()
-res.json(drivers) 
+const driver = await Drivers.find()
+res.json(driver) 
 
 } catch (err) {
 res.status(500).json({ message: err.message})
@@ -18,10 +18,10 @@ res.json (res.driver.name)
 })
 // CREATING ONE
 router.post('/', async (req, res) => {
-const driver = new Driver({
+const driver = new Drivers({
     name: req.body.name,
     number: req.body.number,
-    bookingDate: req.body.bookingDate
+    avatar: req.body.avatar
 })
 try{
 const newDriver = await driver.save()
