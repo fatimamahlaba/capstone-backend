@@ -57,6 +57,7 @@ router.patch("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   const { name, email, contact, password } = req.body;
 
+  console.log(name, email, contact, password);
 
   const salt = await bcrypt.genSalt();
   const hashedPassword = await bcrypt.hash(password, salt);
@@ -68,7 +69,7 @@ router.post("/", async (req, res, next) => {
     password: hashedPassword,
   });
 
-  console.log(subscriber)
+  // console.log(subscriber)
 
   try {
     const newSubscriber = await subscriber.save();
