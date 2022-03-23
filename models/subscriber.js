@@ -37,7 +37,7 @@ required: true,
 default: Date.now
  },
 
- subscriberImg: {
+ avatar: {
      type: String,
      required: false
  }
