@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const Driver = require('../models/drivers')
 
-// GETTING ALL USERS
+// GETTING ALL SUBCRIBER
 router.get('/', async (req, res) => {
 try {
 const drivers = await Driver.find()
@@ -12,7 +12,7 @@ res.json(drivers)
 res.status(500).json({ message: err.message})
 }
 })
-// GETTING ONE USER
+// GETTING ONE SUBSCRIBER
 router.get('/:id', getDriver, (req,res) => {
 res.json (res.driver.name)
 })

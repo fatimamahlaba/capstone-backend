@@ -5,7 +5,7 @@ const access = require("./access")
 async function getSubscriber(req, res, next) {
   let subscriber;
   try {
-    subscriber = await User.findById(req.params.id);
+    subscriber = await Subscriber.findById(req.params.id);
 
     if (!subscriber) res.status(404).json({ message: "Could not find subscriber" });
   } catch (error) {

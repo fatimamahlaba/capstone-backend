@@ -1,40 +1,43 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-// FOR USER ACCESS
-function authenticationToken (req, res, next) {
+
+// FOR SUBCRIBER ACCESS
+function authToken (req, res, next) {
     const authHeader = req.headers['authorization'];
 
     const token = authHeader && authHeader.split(" ")[1];
     if(!token || token == null) 
     return res.sendStatus(401).send({ msg: "User not logged in"})
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, user) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, subscriber) => {
         if(err) res.sendStatus(403).send({ msg: err.message });
-        req.user = user;
+        req.subscriber = subscriber;
         next();
     });
 }
-// SPECIFIC USER ACCESS
-// const authenticationTokenAndAuthorization = (req, res, next) => {
-//     authenticationToken(req, res, () => {
-//         if (req.user.id === req.params.id || req.params.id || req.user.isAdmin) {
-//             next();
-//         } else {
-//             res.status(403).json("You are not allowes to do that!!");
-//         }
-//     });
-// };
+// SPECIFIC SUBSCRIBER ACCESS
+const authTokenAndAuthorization = (req, res, next) => {
+    authToken(req, res, () => {
+        if (req.subscriber.id === req.params.id || req.params.id || req.subscriber.isAdmin) {
+            next();
+        } else {
+            res.status(403).json("You are not authorized!!");
+        }
+    });
+};
 // ADMIN ACCESS
-// const authenticationTokenAndAdmin = (req, res, next) => {
-//     authenticationToken(req, res, () => {
-//         if (req.user.isAdmin){
-//         next();
-//         } else {
-//             res.status(403).json(" You are not allowed to do that ");
-//         }
-//     });
-// }
+const authTokenAndAdmin = (req, res, next) => {
+    authToken(req, res, () => {
+        if (req.subscriber.isAdmin){
+        next();
+        } else {
+            res.status(403).json(" You are not authorized");
+        }
+    });
+}
 
 module.exports = {
-    authenticationToken
+    authToken,
+    authTokenAndAuthorization,
+    authTokenAndAdmin
 }

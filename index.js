@@ -39,7 +39,7 @@ app.get("/", (req, res, next) => {
       },
       subscriber_login: {
         method: "PATCH",
-        route: "/users",
+        route: "/subscribers",
         request_body: {
           email: "String",
           password: "String",
@@ -128,9 +128,9 @@ app.get("/", (req, res, next) => {
           authorization: "Bearer (JWT token)",
         },
         request_body: {
-          title: "String *optional*",
-          body: "String *optional*",
-          img: "String *optional* (Must be hosted image. I can suggest to host on Post Image)",
+          title: "String",
+          body: "String",
+          img: "Stringuser",
         },
         result: {
           post: "Object",
@@ -149,6 +149,6 @@ app.get("/", (req, res, next) => {
 app.use("/subscribers", subscribers);
 app.use("/posts", Posts);
 
-app.listen(app.get("port"), (server) => {
+app.listen(app.get("port"), (server) => {subscribers
   console.info(`Server listen on port ${app.get("port")}`);
 });

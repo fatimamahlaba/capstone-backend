@@ -5,12 +5,12 @@ const Subscriber = require("../models/subscriber");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { getSubscriber } = require("../middleware/functions");
-const { authenticationToken} = require("../middleware/access.js")
+const { authToken, authTokenAndAuthorization, authTokenAndAdmin} = require("../middleware/access.js")
 
 const router = express.Router();
 
 // GET all subscribers
-router.get("/", async (req, res) => {
+router.get("/", authTokenAndAdmin, async (req, res) => {
   try {
     const subscribers = await Subscriber.find();
     res.json(subscribers);
@@ -20,8 +20,14 @@ router.get("/", async (req, res) => {
 });
 
 // GET one subscriber
-router.get("/:id", authenticationToken, (req, res, next) => {
-  res.send(res.subscriber);
+router.get("/:id", authTokenAndAdmin, async (req, res, next) => {
+ try{
+   const subscriber = await Subscriber.findById(req.params.id);
+   const { password, ...others} = subscriber._doc;
+   res.status(200).json(others)
+ }catch (error) {
+   res.status(500).json(err)
+ }
 });
 
 // LOGIN subscriber with email + password
@@ -29,11 +35,11 @@ router.patch("/", async (req, res, next) => {
   const { email, password } = req.body;
   const subscriber = await Subscriber.findOne({ email });
 
-  if (!subscriber) res.status(404).json({ message: "Could not find user" });
-  if (await bcrypt.compare(password, user.password)) {
+  if (!subscriber) res.status(404).json({ message: "Could not find subscriber" });
+  if (await bcrypt.compare(password, subscriber.password)) {
     try {
       const access_token = jwt.sign(
-        JSON.stringify(user),
+        JSON.stringify(subscriber),
         process.env.JWT_SECRET_KEY
       );
       res.status(201).json({ jwt: access_token });
@@ -48,7 +54,7 @@ router.patch("/", async (req, res, next) => {
 });
 
 // REGISTER a subscriber
-router.post("/", authenticationToken ,async (req, res, next) => {
+router.post("/",async (req, res, next) => {
   const { name, email, contact, password } = req.body;
 
   const salt = await bcrypt.genSalt();
@@ -66,7 +72,7 @@ router.post("/", authenticationToken ,async (req, res, next) => {
 
     try {
       const access_token = jwt.sign(
-        JSON.stringify(newUser),
+        JSON.stringify(newSubscriber),
         process.env.JWT_SECRET_KEY
       );
       res.status(201).json({ jwt: access_token });
@@ -79,20 +85,20 @@ router.post("/", authenticationToken ,async (req, res, next) => {
 });
 
 // UPDATE a subscriber
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", authTokenAndAuthorization, async (req, res, next) => {
   const { name, contact, password, avatar, about } = req.body;
-  if (name) res.user.name = name;
-  if (contact) res.user.contact = contact;
-  if (avatar) res.user.avatar = avatar;
-  if (about) res.user.about = about;
+  if (name) res.subscriber.name = name;
+  if (contact) res.subscriber.contact = contact;
+  if (avatar) res.subscriber.avatar = avatar;
+  if (about) res.subscriberr.about = about;
   if (password) {
-    const salt = await bcrypt.genSalt();
+    const salt = await res.subscriber.save();
     const hashedPassword = await bcrypt.hash(password, salt);
-    res.user.password = hashedPassword;
+    res.subscriber.password = hashedPassword;
   }
 
   try {
-    const updatedSubscriber = await res.user.save();
+    const updatedSubscriber = await res.subscriber.save();
     res.status(201).send(updatedSubscriber);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -100,10 +106,10 @@ router.put("/:id", async (req, res, next) => {
 });
 
 // DELETE a subscriberer
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", authTokenAndAuthorization, async (req, res, next) => {
   try {
     await res.subscriber.remove();
-    res.json({ message: "Deleted subscriber" });
+    res.json({ message: "Subscriber deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

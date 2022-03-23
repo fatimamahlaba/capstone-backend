@@ -30,13 +30,13 @@ router.post("/",async (req, res, next) => {
     ? (post = new Post({
         title,
         body,
-        author: req.user._id,
+        author: req.subscriber._id,
         img,
       }))
     : (post = new Post({
         title,
         body,
-        author: req.user._id,
+        author: req.subscriber._id,
       }));
 
   try {
@@ -49,7 +49,7 @@ router.post("/",async (req, res, next) => {
 
 // UPDATE a post
 router.put("/:id", async (req, res, next) => {
-  if (req.user._id !== res.post.author)
+  if (req.subscriber._id !== res.post.author)
     res
       .status(400)
       .json({ message: "You do not have the permission to update this post" });
@@ -68,7 +68,7 @@ router.put("/:id", async (req, res, next) => {
 
 // DELETE a post
 router.delete("/:id", async (req, res, next) => {
-  if (req.user._id !== res.post.author)
+  if (req.subscriber._id !== res.post.author)
     res
       .status(400)
       .json({ message: "You do not have the permission to delete this post" });
