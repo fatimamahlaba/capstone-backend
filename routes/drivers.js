@@ -1,6 +1,9 @@
+require("dotenv").config;
+
 const express = require('express')
 const router = express.Router()
 const Drivers = require("../models/Drivers")
+const {getDriver} = require("../middleware/functions")
 
 // GETTING ALL SUBCRIBER
 router.get('/', async (req, res) => {
@@ -13,8 +16,8 @@ res.status(500).json({ message: err.message})
 }
 })
 // GETTING ONE SUBSCRIBER
-router.get('/:id', getDriver, (req,res) => {
-res.json (res.driver.name)
+router.get("/:id", getDriver ,async(req,res, next) => {
+res.send(res.driver)
 })
 // CREATING ONE
 router.post('/', async (req, res) => {
@@ -32,7 +35,7 @@ res.status(400).json({ message: err.message })
 }
 })
 // DELETING ONE
- router.delete('/:id', getDriver, async (req,res) => {
+ router.delete('/:id',getDriver, async (req,res) => {
     try{
 await res.driver.remove()
 res.json({ message:'Deleted Learner' })
@@ -41,16 +44,5 @@ res.status(500).json({ message: err.message })
     }
 })
 
-async function getDriver(req, res, next){
-let driver
-    try{
-driver = await Driver.findById(req.params.id)
-if (driver == null)
-return res.status(404).json({ message: 'Cannot Find Learner' })
-    }catch (err){
-  return res.status(500).json({ message: err.message })     
-    }
-    res.driver = driver
-    next()
-}
+
 module.exports = router

@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 
 const Posts = require("./routes/posts");
-const subscribers = require("./routes/subscribers");
+const subscribers
+ = require("./routes/subscribers");
 const drivers = require("./routes/drivers");
 
 // Setting up MongoDB connection
@@ -139,7 +140,7 @@ app.get("/", (req, res, next) => {
       },
       delete_post: {
         method: "DELETE",
-        route: "/posts/:id",
+        route: "/posts/:_id",
         result: {
           message: "Object",
         },
